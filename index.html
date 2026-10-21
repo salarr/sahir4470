@@ -8,8 +8,8 @@
 <style>
 :root{--navy:#14304f;--teal:#0f766e;--bg:#eef2f6;--card:#fff;--line:#d9e1ea;--txt:#1b2733;--mut:#64748b;--green:#15803d;--red:#dc2626;--blk:#1f2937}
 *{box-sizing:border-box}
-@font-face{font-family:"UrduFont";src:local("Jameel Noori Nastaleeq"),local("JameelNooriNastaleeq"),url("JameelNooriNastaleeq.ttf");size-adjust:136%;unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF,U+200C-200F}
-body{margin:0;font-family:"UrduFont","Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--txt);font-size:14px;line-height:1.6}
+@font-face{font-family:"UrduFont";src:local("Jameel Noori Nastaleeq"),local("JameelNooriNastaleeq"),url("JameelNooriNastaleeq.ttf");size-adjust:171%;unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF,U+200C-200F}
+body{margin:0;font-family:"UrduFont","UrduNoto","Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--txt);font-size:14px;line-height:1.6}
 .arr{display:none;color:#dc2626;stroke-width:3;animation:blink 1s step-end infinite}.arr.on{display:inline}@keyframes blink{50%{opacity:0}}
 input,select,textarea,button{font-family:inherit}
 td{unicode-bidi:plaintext}
@@ -46,9 +46,7 @@ tr:nth-child(even) td{background:#f7f9fc}tr:hover td{background:#e6f4f1}
 .empty{text-align:center;color:var(--mut);padding:40px}
 .modal{position:fixed;inset:0;background:#0008;display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:20px;z-index:9}
 .modal.on{display:flex}
-.box{background:#fff;border-radius:12px;width:100%;max-width:900px;padding:44px 20px 20px;position:relative}
-.x{position:absolute;top:10px;right:12px;border:0;background:none;cursor:pointer;color:#64748b;padding:6px;border-radius:6px;line-height:0}.x:hover{background:#0001;color:var(--red)}
-.box h2:empty{display:none}
+.box{background:#fff;border-radius:12px;width:100%;max-width:900px;padding:20px}
 .box h2{margin:0 0 14px;color:var(--navy)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
 .grid label{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:13px}
@@ -72,7 +70,6 @@ tr:nth-child(even) td{background:#f7f9fc}tr:hover td{background:#e6f4f1}
 <symbol id="info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
 <symbol id="file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M9 15l3 3 3-3M12 18v-6"/></symbol>
 <symbol id="down" viewBox="0 0 24 24"><path d="M12 4v16M5 13l7 7 7-7"/></symbol>
-<symbol id="close" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></symbol>
 <symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></symbol>
 </svg>
 
@@ -114,15 +111,24 @@ tr:nth-child(even) td{background:#f7f9fc}tr:hover td{background:#e6f4f1}
 </main>
 
 <div class="modal" id="modal"><div class="box">
-  <button class="x" id="xBtn" title="Close"><svg class="i" style="width:22px;height:22px"><use href="#close"/></svg></button>
-  <h2 id="mTitle"></h2>
+  <h2 id="mTitle">Add Application</h2>
   <div class="grid" id="form"></div>
   <div class="foot"><button class="btn gray" id="cancel">Cancel</button><button class="btn" id="save">Save</button></div>
 </div></div>
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='1.0.2';
+const APP_VERSION='1.0.3';
+/* Online Urdu fallback: Noto Nastaliq Urdu (used only if Jameel Noori Nastaleeq is not available) */
+const NOTO_SIZE='125%';
+const NOTO_CSS='https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap';
+(function(){
+  if(!navigator.onLine)return;
+  fetch(NOTO_CSS).then(r=>r.text()).then(css=>{
+    css=css.replace(/font-family:\s*'Noto Nastaliq Urdu'\s*;/g,"font-family:'UrduNoto';size-adjust:"+NOTO_SIZE+";");
+    const s=document.createElement('style');s.textContent=css;document.head.appendChild(s);
+  }).catch(()=>{});
+})();
 const COLS=['Sr. No.','Diary No. CPO','Date (CPO)','Diary No. DC','Date (DC)','Applicant Name','Applicant ID Card','Applicant Contact','Address','Application Against','Tehsil','Police Station','Circle','Division','Return Date','Status'];
 const DATES=[2,4,14], DD={10:'tehsil',11:'police station',12:'circle',13:'division'}, PER=15;
 let wb=null, handle=null, rows=[], res={}, filtered=[], page=1, editIdx=-1;
@@ -212,7 +218,7 @@ const iso=s=>{const m=/^(\d\d)\/(\d\d)\/(\d{4})$/.exec(s);return m?`${m[3]}-${m[
 const dmy=s=>s?s.split('-').reverse().join('/'):'';
 function openForm(i){
   editIdx=i;const r=i>=0?rows[i]:COLS.map(()=>'');
-  $('mTitle').textContent=i>=0?'Edit Application':'';
+  $('mTitle').textContent=i>=0?'Edit Application':'Add Application';
   let h='';
   for(let k=1;k<16;k++){
     const id='f'+k,v=r[k],cls=(k===8||k===9)?'full':'';
@@ -231,7 +237,7 @@ function openForm(i){
   $('modal').classList.add('on');
 }
 $('addBtn').onclick=()=>{if(!handle){toast('Connect an Excel file first (About tab)');return}openForm(-1)};
-$('cancel').onclick=$('xBtn').onclick=()=>$('modal').classList.remove('on');
+$('cancel').onclick=()=>$('modal').classList.remove('on');
 $('save').onclick=async()=>{
   if(!$('f5').value.trim()){alert('Applicant Name is required');return}
   const r=[String(rows.length+1)];
@@ -250,10 +256,10 @@ async function del(i){
 /* ---------- Print preview ---------- */
 function preview(i){
   const r=rows[i],w=window.open('','_blank');
-  w.document.write(`<html><head><title>Application Management System</title><style>
+  w.document.write(`<html><head><title>Application Management System</title><link rel="stylesheet" href="${NOTO_CSS}"><style>
   @font-face{font-family:UrduFont;src:local('Jameel Noori Nastaleeq'),url('${new URL('JameelNooriNastaleeq.ttf',location.href)}');unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF}
-  body{font-family:UrduFont,Segoe UI,Arial,sans-serif;padding:30px;color:#111;font-size:19px}h1{text-align:center;margin:0 0 24px;font-size:30px}
-  table{width:100%;border-collapse:collapse}td{border:1px solid #333;padding:10px;font-size:19px}td:first-child{width:35%;background:#eee;font-weight:700}
+  body{font-family:UrduFont,'Noto Nastaliq Urdu',Segoe UI,Arial,sans-serif;padding:30px;color:#111;font-size:24px}h1{text-align:center;margin:0 0 24px;font-size:30px}
+  table{width:100%;border-collapse:collapse}td{border:1px solid #333;padding:10px;font-size:24px}td:first-child{width:35%;background:#eee;font-weight:700}
   .sig{display:flex;justify-content:space-between;margin-top:70px}.sig div{border-top:1px solid #000;padding-top:4px;width:200px;text-align:center}
   @media print{button{display:none}}</style></head><body>
   <h1>Application Management System</h1>

@@ -4,44 +4,46 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Application Management System</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <script src="xlsx.full.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';document.head.appendChild(s)"></script>
 <style>
-:root{--navy:#14304f;--teal:#0f766e;--bg:#eef2f6;--card:#fff;--line:#d9e1ea;--txt:#1b2733;--mut:#64748b;--green:#15803d;--red:#dc2626;--blk:#1f2937}
+:root{--navy:#14304f;--teal:#13a58e;--bg:#eef2f6;--card:#fff;--line:#d9e1ea;--txt:#1b2733;--mut:#64748b;--green:#15803d;--red:#dc2626;--blk:#1f2937}
 *{box-sizing:border-box}
 @font-face{font-family:"UrduFont";src:local("Jameel Noori Nastaleeq"),local("JameelNooriNastaleeq"),url("JameelNooriNastaleeq.ttf");size-adjust:171%;unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF,U+200C-200F}
-body{margin:0;font-family:"UrduFont","UrduNoto","Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--txt);font-size:14px;line-height:1.6}
+body{margin:0;font-family:"UrduFont","UrduNoto","Inter","Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--txt);font-size:16px;line-height:1.6}
 .arr{display:none;color:#dc2626;stroke-width:3;animation:blink 1s step-end infinite}.arr.on{display:inline}@keyframes blink{50%{opacity:0}}
 input,select,textarea,button{font-family:inherit}
 td{unicode-bidi:plaintext}
 .upd{display:none;background:#fff7ed;border:1px solid #fdba74;color:#7c2d12;padding:10px 14px;border-radius:10px;margin-bottom:12px;align-items:center;gap:12px;flex-wrap:wrap}.upd.on{display:flex}
-header{background:linear-gradient(135deg,var(--navy),#1d4e7a);color:#fff;padding:16px 24px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px #0003}
-header h1{margin:0;font-size:22px;letter-spacing:.3px}
+header{background:linear-gradient(135deg,var(--navy),#1d4e7a);color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:center;text-align:center;gap:12px;box-shadow:0 2px 8px #0003}
+header h1{margin:0;font-size:24px;letter-spacing:.3px}
 svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle}
 main{max-width:1500px;margin:18px auto;padding:0 16px}
-.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:var(--card);padding:12px;border-radius:10px;border:1px solid var(--line)}
-.bar select,.bar input{padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:14px;background:#fff}
+.bar{direction:rtl;display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:var(--card);padding:12px;border-radius:10px;border:1px solid var(--line)}
+.bar select,.bar input{padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:16px;background:#fff;direction:rtl}
+.bar input{text-align:right}
 .bar input{flex:1;min-width:180px}
-.btn{border:0;border-radius:8px;padding:9px 16px;font-size:14px;font-weight:600;cursor:pointer;color:#fff;background:var(--teal);display:inline-flex;gap:6px;align-items:center}
+.btn{border:0;border-radius:8px;padding:9px 16px;font-size:16px;font-weight:600;cursor:pointer;color:#fff;background:var(--teal);display:inline-flex;gap:6px;align-items:center}
 .btn:hover{filter:brightness(1.1)}.btn.gray{background:#64748b}
-.tabs{display:flex;gap:4px;margin-top:16px;border-bottom:2px solid var(--line)}
+.tabs{direction:rtl;display:flex;gap:4px;margin-top:16px;border-bottom:2px solid var(--line)}
 .tab{padding:10px 22px;cursor:pointer;font-weight:600;color:var(--mut);border:0;background:none;border-bottom:3px solid transparent;margin-bottom:-2px;display:flex;gap:6px;align-items:center}
 .tab.on{color:var(--teal);border-color:var(--teal)}
 .panel{display:none;background:var(--card);border:1px solid var(--line);border-top:0;border-radius:0 0 10px 10px;padding:14px}
 .panel.on{display:block}
 .wrap{overflow-x:auto;direction:rtl}
 table{border-collapse:collapse;width:100%;min-width:1250px}
-th{background:var(--navy);color:#fff;text-align:right;padding:10px 8px;font-size:13px;white-space:nowrap}
+th{background:var(--navy);color:#fff;text-align:right;padding:10px 8px;font-size:15px;white-space:nowrap}
 td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top;text-align:right}
 tr:nth-child(even) td{background:#f7f9fc}tr:hover td{background:#e6f4f1}
 .act{white-space:nowrap}
 .act button{border:0;background:none;cursor:pointer;padding:4px;border-radius:6px}
 .act button:hover{background:#0001}
 .pv{color:var(--green)}.dl{color:var(--red)}.ed{color:var(--blk)}
-.badge{padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600}
+.badge{padding:2px 10px;border-radius:12px;font-size:14px;font-weight:600}
 .pending{background:#fef3c7;color:#92400e}.decided{background:#dcfce7;color:#166534}
 .pg{display:flex;gap:6px;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap}
 .pg div{display:flex;gap:4px;flex-wrap:wrap}
-.pg button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:6px 11px;cursor:pointer}
+.pg button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:6px 11px;cursor:pointer;font-size:16px}
 .pg button.on{background:var(--teal);color:#fff;border-color:var(--teal)}.pg button:disabled{opacity:.4;cursor:default}
 .empty{text-align:center;color:var(--mut);padding:40px}
 .modal{position:fixed;inset:0;background:#0008;display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:20px;z-index:9}
@@ -51,15 +53,20 @@ tr:nth-child(even) td{background:#f7f9fc}tr:hover td{background:#e6f4f1}
 .xb:hover{background:#0001;color:var(--red)}
 .box h2{margin:0 0 14px;color:var(--navy)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
-.grid label{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:13px}
+.grid label{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:15px}
 .grid input,.grid select,.grid textarea{padding:9px;border:1px solid var(--line);border-radius:8px;font:inherit;font-weight:400}
 .grid .full{grid-column:1/-1}
 .foot{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
 .about{max-width:640px;line-height:1.7}
 .about .st{padding:10px 14px;border-radius:8px;background:#f1f5f9;margin:10px 0}
 .about .ok{background:#dcfce7;color:#166534}
+.dlg{align-items:center;z-index:50}
+.dlg .box{max-width:460px;padding:26px 24px 22px;text-align:center}
+.dlg .box h2{margin:0 0 8px}
+.dlg .box p{margin:0 0 18px;color:var(--mut)}
+.dlg .btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 .toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:12px 18px;border-radius:8px;display:none;z-index:99}
-@media(max-width:600px){header h1{font-size:17px}.tab{padding:9px 12px}}
+@media(max-width:600px){header h1{font-size:19px}.tab{padding:9px 12px}}
 </style>
 </head>
 <body>
@@ -106,7 +113,7 @@ tr:nth-child(even) td{background:#f7f9fc}tr:hover td{background:#e6f4f1}
       <button class="btn gray" id="reBtn" style="display:none">Reconnect last file</button>
       <div class="st" id="verInfo"></div>
       <button class="btn" id="chkBtn"><svg class="i"><use href="#search"/></svg> Check for updates</button>
-      <button class="btn" id="updBtn" style="display:none;background:var(--green)">Update now</button>
+      <button class="btn" id="updBtn" style="display:none">Update now</button>
       <h3>Developer</h3>
       <p><b>Majid Ali</b><br>0300-5005159</p>
     </div>
@@ -118,10 +125,28 @@ tr:nth-child(even) td{background:#f7f9fc}tr:hover td{background:#e6f4f1}
   <div class="grid" id="form"></div>
   <div class="foot"><button class="btn gray" id="cancel">Cancel</button><button class="btn" id="save">Save</button></div>
 </div></div>
+<div class="modal dlg" id="connDlg"><div class="box">
+  <button class="xb" id="connX" title="Close"><svg class="i" style="width:24px;height:24px"><use href="#x"/></svg></button>
+  <h2>Connect Excel File</h2>
+  <p id="connMsg">Please connect your Excel file to start working.</p>
+  <div class="btns">
+    <button class="btn" id="dReBtn" style="display:none"><svg class="i"><use href="#file"/></svg> Reconnect last file</button>
+    <button class="btn" id="dSelBtn"><svg class="i"><use href="#file"/></svg> Select Excel File</button>
+  </div>
+</div></div>
+<div class="modal dlg" id="updDlg"><div class="box">
+  <h2>Update Available</h2>
+  <p id="updMsg">A new version is available.</p>
+  <div class="btns">
+    <button class="btn gray" id="uClose">Close</button>
+    <button class="btn gray" id="uLater">Remind me later</button>
+    <button class="btn" id="uNow">Update now</button>
+  </div>
+</div></div>
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='1.0.4';
+const APP_VERSION='1.0.5';
 /* Online Urdu fallback: Noto Nastaliq Urdu (used only if Jameel Noori Nastaleeq is not available) */
 const NOTO_SIZE='125%';
 const NOTO_CSS='https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap';
@@ -163,7 +188,9 @@ async function loadFile(){
   });
   $('status').className='st ok';$('status').textContent='Connected: '+handle.name+' ('+rows.length+' applications)';
   $('reBtn').style.display='none';
+  $('connDlg').classList.remove('on');
   applyFilter();
+  maybeShowUpdate();
 }
 async function saveFile(){
   if(!handle){toast('Please connect an Excel file in the About tab');return false}
@@ -187,6 +214,14 @@ $('connBtn').onclick=async()=>{
   try{const [h]=await showOpenFilePicker({types:[{description:'Excel',accept:{'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':['.xlsx']}}]});await connect(h)}catch(e){}
 };
 $('reBtn').onclick=async()=>{const h=await idbGet();if(h)try{await connect(h)}catch(e){alert(e.message)}};
+$('dSelBtn').onclick=()=>$('connBtn').onclick();
+$('dReBtn').onclick=()=>$('reBtn').onclick();
+$('connX').onclick=()=>$('connDlg').classList.remove('on');
+function showConnDlg(last){
+  $('dReBtn').style.display=last?'inline-flex':'none';
+  $('connMsg').textContent=last?('Last file: '+last+'. Reconnect it or select another Excel file.'):'Please select your Excel file to start working.';
+  $('connDlg').classList.add('on');
+}
 
 /* ---------- Table ---------- */
 function buildHead(){
@@ -262,8 +297,8 @@ function preview(i){
   w.document.write(`<html><head><title>Application Management System</title><style>
   @font-face{font-family:UrduFont;src:local('Jameel Noori Nastaleeq'),url('${new URL('JameelNooriNastaleeq.ttf',location.href)}');size-adjust:126%;unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF}
   ${document.getElementById('notoStyle')?.textContent||''}
-  body{font-family:UrduFont,UrduNoto,Segoe UI,Arial,sans-serif;padding:30px;color:#111;font-size:19px}h1{text-align:center;margin:0 0 24px;font-size:30px}
-  table{width:100%;border-collapse:collapse}td{border:1px solid #333;padding:10px;font-size:19px}td:first-child{width:35%;background:#eee;font-weight:700}
+  body{font-family:UrduFont,UrduNoto,Inter,Segoe UI,Arial,sans-serif;padding:30px;color:#111;font-size:21px}h1{text-align:center;margin:0 0 24px;font-size:32px}
+  table{width:100%;border-collapse:collapse}td{border:1px solid #333;padding:10px;font-size:21px}td:first-child{width:35%;background:#eee;font-weight:700}
   .sig{display:flex;justify-content:space-between;margin-top:70px}.sig div{border-top:1px solid #000;padding-top:4px;width:200px;text-align:center}
   @media print{button{display:none}}</style></head><body>
   <h1>Application Management System</h1>
@@ -282,24 +317,61 @@ async function checkUpdate(manual){
   if(!navigator.onLine){if(manual)toast('No internet connection');return}
   try{
     const j=await(await fetch(UPDATE_URL+'?t='+Date.now(),{cache:'no-store'})).json();
-    if(isNewer(j.version,APP_VERSION)){newer=j;$('verInfo').textContent='Version '+APP_VERSION+' - new version '+j.version+' is available.';$('updBtn').style.display='inline-flex';$('arr').classList.add('on');if(manual)toast('A new version is available')}
+    if(isNewer(j.version,APP_VERSION)){newer=j;$('verInfo').textContent='Version '+APP_VERSION+' - new version '+j.version+' is available.';$('updBtn').style.display='inline-flex';$('arr').classList.add('on');if(manual){toast('A new version is available');dismissed=false;try{localStorage.removeItem('ams_later')}catch(e){}}maybeShowUpdate()}
     else if(manual)toast('You are using the latest version');
   }catch(e){if(manual)toast('Could not check for updates')}
+}
+/* popup: Close / Remind me later / Update now */
+let dismissed=false,laterTimer=null;
+const LATER_MS=3600000;
+const getLater=()=>{try{return +localStorage.getItem('ams_later')||0}catch(e){return 0}};
+function maybeShowUpdate(){
+  if(!newer||!handle||dismissed)return;
+  if($('connDlg').classList.contains('on'))return;
+  const wait=getLater()-Date.now();
+  if(wait>0){clearTimeout(laterTimer);laterTimer=setTimeout(maybeShowUpdate,wait);return}
+  $('updMsg').textContent='Version '+newer.version+' is available (you have '+APP_VERSION+').';
+  $('updDlg').classList.add('on');
+}
+$('uClose').onclick=()=>{dismissed=true;$('updDlg').classList.remove('on')};
+$('uLater').onclick=()=>{
+  try{localStorage.setItem('ams_later',String(Date.now()+LATER_MS))}catch(e){}
+  $('updDlg').classList.remove('on');
+  clearTimeout(laterTimer);laterTimer=setTimeout(maybeShowUpdate,LATER_MS);
+};
+$('uNow').onclick=()=>{$('updDlg').classList.remove('on');applyUpdate()};
+
+/* find the app file; if it is not at the saved path, open the file picker */
+async function pickAppFile(){
+  toast('Application file not found - please select it');
+  const [h]=await showOpenFilePicker({types:[{description:'Application file',accept:{'text/html':['.html']}}]});
+  const me=decodeURIComponent(location.pathname.split('/').pop());
+  if(me&&h.name!==me)throw new Error('Select this application file: '+me);
+  if(await h.requestPermission({mode:'readwrite'})!=='granted')throw new Error('Permission denied');
+  return h;
+}
+async function getAppHandle(){
+  let h=await idbGet('app');
+  if(h){
+    try{
+      if(await h.requestPermission({mode:'readwrite'})==='granted'){await h.getFile();return h}
+    }catch(e){/* moved, renamed or deleted */}
+  }
+  return await pickAppFile();
 }
 async function applyUpdate(){
   if(!newer)return;
   if(!window.showOpenFilePicker){window.open(newer.url);return}
   try{
-    let h=await idbGet('app');
-    if(!h||await h.requestPermission({mode:'readwrite'})!=='granted'){
-      [h]=await showOpenFilePicker({types:[{description:'Application file',accept:{'text/html':['.html']}}]});
-      const me=decodeURIComponent(location.pathname.split('/').pop());
-      if(h.name!==me)throw new Error('Select this application file: '+me);
-      if(await h.requestPermission({mode:'readwrite'})!=='granted')throw new Error('Permission denied');
-    }
+    const h=await getAppHandle();
     const html=await(await fetch(newer.url+'?t='+Date.now(),{cache:'no-store'})).text();
     if(!/^\s*<!DOCTYPE html/i.test(html)||!html.includes("APP_VERSION='"+newer.version+"'"))throw new Error('Downloaded update is not valid');
-    const w=await h.createWritable();await w.write(html);await w.close();
+    let w;
+    try{w=await h.createWritable()}
+    catch(e){ /* file vanished between check and write */
+      const h2=await pickAppFile();w=await h2.createWritable();await idbSet(h2,'app');
+    }
+    await w.write(html);await w.close();
     await idbSet(h,'app');
     toast('Updated to '+newer.version+'. Reloading...');
     setTimeout(()=>location.reload(),1500);
@@ -322,7 +394,8 @@ window.addEventListener('load',async()=>{
   if(h){handle=null;
     try{if(await h.queryPermission({mode:'readwrite'})==='granted'){handle=h;await loadFile();return}}catch(e){}
     $('status').textContent='Last file: '+h.name+' - click Reconnect';$('reBtn').style.display='inline-flex';
-  }
+    showConnDlg(h.name);
+  }else showConnDlg('');
 });
 </script>
 </body>

@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <script src="xlsx.full.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';document.head.appendChild(s)"></script>
 <style>
-:root{--thead:linear-gradient(90deg,#0e8a76,#13a58e,#3cc9b2);--navy:#14304f;--teal:#13a58e;--bg:#eef2f6;--card:#fff;--line:#d9e1ea;--txt:#1b2733;--mut:#64748b;--green:#15803d;--red:#dc2626;--blk:#1f2937}
+:root{--thead:#13a58e;--navy:#14304f;--teal:#13a58e;--bg:#eef2f6;--card:#fff;--line:#d9e1ea;--txt:#1b2733;--mut:#64748b;--green:#15803d;--red:#dc2626;--blk:#1f2937}
 *{box-sizing:border-box}
 @font-face{font-family:"UrduFont";src:local("Jameel Noori Nastaleeq"),local("JameelNooriNastaleeq"),url("JameelNooriNastaleeq.ttf");size-adjust:171%;unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF,U+200C-200F}
 body{margin:0;font-family:"UrduFont","UrduNoto","Inter","Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--txt);font-size:16px;line-height:1.6}
@@ -15,7 +15,7 @@ body{margin:0;font-family:"UrduFont","UrduNoto","Inter","Segoe UI",Tahoma,Arial,
 input,select,textarea,button{font-family:inherit}
 td{unicode-bidi:plaintext}
 .upd{display:none;background:#fff7ed;border:1px solid #fdba74;color:#7c2d12;padding:10px 14px;border-radius:10px;margin-bottom:12px;align-items:center;gap:12px;flex-wrap:wrap}.upd.on{display:flex}
-header{background:linear-gradient(135deg,var(--navy),#1d4e7a);color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:center;text-align:center;gap:12px;box-shadow:0 2px 8px #0003}
+header{background:#13a58e;color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:center;text-align:center;gap:12px;box-shadow:0 2px 8px #0003}
 header h1{margin:0;font-size:24px;letter-spacing:.3px}
 svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle}
 main{max-width:1500px;margin:18px auto;padding:0 16px}
@@ -97,8 +97,8 @@ tr:nth-child(even) td{background:#f7f9fc}tr:hover td{background:#e6f4f1}
   </div>
 
   <div class="tabs">
-    <button class="tab on" data-t="apps">Applications</button>
-    <button class="tab" data-t="about"><svg class="i"><use href="#info"/></svg> About <svg class="i arr" id="arr"><use href="#down"/></svg></button>
+    <button class="tab on" data-t="apps">درخواست ہائے</button>
+    <button class="tab" data-t="about"><svg class="i"><use href="#info"/></svg> راہنمائی و اپ ڈیٹس <svg class="i arr" id="arr"><use href="#down"/></svg></button>
   </div>
 
   <div class="panel on" id="apps">
@@ -148,7 +148,7 @@ tr:nth-child(even) td{background:#f7f9fc}tr:hover td{background:#e6f4f1}
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='1.0.6';
+const APP_VERSION='1.0.7';
 /* Online Urdu fallback: Noto Nastaliq Urdu (used only if Jameel Noori Nastaleeq is not available) */
 const NOTO_SIZE='125%';
 const NOTO_CSS='https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap';
@@ -326,7 +326,7 @@ async function checkUpdate(manual){
 }
 /* popup: Close / Remind me later / Update now */
 let dismissed=false,laterTimer=null;
-const LATER_MS=3600000;
+const LATER_MS=600000;
 const getLater=()=>{try{return +localStorage.getItem('ams_later')||0}catch(e){return 0}};
 function maybeShowUpdate(){
   if(!newer||!handle||dismissed)return;

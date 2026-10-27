@@ -148,7 +148,7 @@ tr:nth-child(even) td{background:#f7f9fc}tr:hover td{background:#e6f4f1}
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='1.0.7';
+const APP_VERSION='1.0.8';
 /* Online Urdu fallback: Noto Nastaliq Urdu (used only if Jameel Noori Nastaleeq is not available) */
 const NOTO_SIZE='125%';
 const NOTO_CSS='https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap';
@@ -345,17 +345,21 @@ $('uLater').onclick=()=>{
 $('uNow').onclick=()=>{$('updDlg').classList.remove('on');applyUpdate()};
 
 /* find the app file; if it is not at the saved path, open the file picker */
+const myName=()=>decodeURIComponent(location.pathname.split('/').pop());
 async function pickAppFile(){
-  toast('Application file not found - please select it');
-  const [h]=await showOpenFilePicker({types:[{description:'Application file',accept:{'text/html':['.html']}}]});
-  const me=decodeURIComponent(location.pathname.split('/').pop());
-  if(me&&h.name!==me)throw new Error('Select this application file: '+me);
-  if(await h.requestPermission({mode:'readwrite'})!=='granted')throw new Error('Permission denied');
+  toast('Application file not found (moved or renamed) - please select it');
+  const [h]=await showOpenFilePicker({mode:'readwrite',types:[{description:'Application file',accept:{'text/html':['.html']}}]});
+  const me=myName();
+  if(me&&h.name!==me&&!confirm('Selected file: '+h.name+'\nOpen file: '+me+'\n\nFile name is different. Update the selected file anyway?')){
+    const e=new Error('cancelled');e.name='AbortError';throw e;
+  }
+  if(await h.queryPermission({mode:'readwrite'})!=='granted'&&await h.requestPermission({mode:'readwrite'})!=='granted')throw new Error('Permission denied for this file');
   return h;
 }
 async function getAppHandle(){
   let h=await idbGet('app');
-  if(h){
+  /* saved handle is used only if it still exists and has the same name as the open file */
+  if(h&&h.name===myName()){
     try{
       if(await h.requestPermission({mode:'readwrite'})==='granted'){await h.getFile();return h}
     }catch(e){/* moved, renamed or deleted */}
@@ -364,21 +368,32 @@ async function getAppHandle(){
 }
 async function applyUpdate(){
   if(!newer)return;
-  if(!window.showOpenFilePicker){window.open(newer.url);return}
+  if(!window.showOpenFilePicker||!window.isSecureContext){
+    if(confirm('Is browser mein file ko usi jagah rewrite karna mumkin nahi hai (Chrome ya Edge desktop chahiye, file seedha computer se khuli honi chahiye).\n\nNai file download karni hai?'))window.open(newer.url);
+    return;
+  }
   try{
+    toast('Looking for the application file...');
     const h=await getAppHandle();
-    const html=await(await fetch(newer.url+'?t='+Date.now(),{cache:'no-store'})).text();
+    toast('Downloading version '+newer.version+'...');
+    const resp=await fetch(newer.url+'?t='+Date.now(),{cache:'no-store'});
+    if(!resp.ok)throw new Error('Download failed (HTTP '+resp.status+')');
+    const html=await resp.text();
     if(!/^\s*<!DOCTYPE html/i.test(html)||!html.includes("APP_VERSION='"+newer.version+"'"))throw new Error('Downloaded update is not valid');
     let w;
     try{w=await h.createWritable()}
     catch(e){ /* file vanished between check and write */
       const h2=await pickAppFile();w=await h2.createWritable();await idbSet(h2,'app');
     }
+    toast('Writing update...');
     await w.write(html);await w.close();
     await idbSet(h,'app');
     toast('Updated to '+newer.version+'. Reloading...');
     setTimeout(()=>location.reload(),1500);
-  }catch(e){if(e.name!=='AbortError')alert('Update failed: '+e.message)}
+  }catch(e){
+    if(e.name==='AbortError')toast('Update cancelled');
+    else alert('Update failed ('+(e.name||'Error')+'): '+e.message);
+  }
 }
 $('chkBtn').onclick=()=>checkUpdate(true);
 $('updBtn').onclick=applyUpdate;

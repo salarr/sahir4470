@@ -41,8 +41,10 @@ tr:nth-child(even) td{background:#f7f9fc}tr:hover td{background:#e6f4f1}
 .pv{color:var(--green)}.dl{color:var(--red)}.ed{color:var(--blk)}
 .badge{padding:2px 10px;border-radius:12px;font-size:13px;font-weight:600}
 .pending{background:#fef3c7;color:#92400e}.decided{background:#dcfce7;color:#166534}
-.pg{display:flex;gap:6px;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap}
-.pg div{display:flex;gap:4px;flex-wrap:wrap}
+.pg{display:flex;flex-direction:column;gap:8px;justify-content:center;align-items:center;text-align:center;margin-top:12px}
+.pg div{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.cnt{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:#13a58e;color:#fff;font-size:13px;font-weight:700;line-height:1}
+.tab.on .cnt{background:#fff;color:#13a58e}
 .pg button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:6px 11px;cursor:pointer;font-size:16px}
 .pg button.on{background:var(--teal);color:#fff;border-color:var(--teal)}.pg button:disabled{opacity:.4;cursor:default}
 .empty{text-align:center;color:var(--mut);padding:40px}
@@ -71,6 +73,14 @@ tr:nth-child(even) td{background:#f7f9fc}tr:hover td{background:#e6f4f1}
 .toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:12px 18px;border-radius:8px;display:none;z-index:99}
 @media(max-width:600px){header h1{font-size:19px}.tab{padding:9px 12px}}
 
+/* ===== Reports tab ===== */
+.rbar{direction:rtl;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-bottom:12px}
+.rbar label{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:15px}
+.rbar select{padding:9px 16px;min-width:150px;font-size:16px;direction:rtl;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.8);border-radius:999px;box-shadow:inset 0 1px 2px rgba(11,61,53,.1),inset 0 -1px 1px rgba(255,255,255,.6);color:var(--txt)}
+.rbtns{display:flex;gap:8px;flex-wrap:wrap;margin-inline-start:auto}
+.rinfo{direction:rtl;font-weight:600;margin:0 4px 8px;color:var(--mut)}
+.rwrap{max-height:62vh;overflow:auto;direction:rtl;border-radius:18px}
+.rwrap th{position:sticky;top:0;z-index:1}
 /* ===== Liquid glass theme (teal #13a58e) ===== */
 :root{--txt:#0b3d35;--mut:#4f7a72;--line:rgba(255,255,255,.6);--glass:linear-gradient(135deg,rgba(255,255,255,.55),rgba(255,255,255,.16));--rim:inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 -1.5px 1px rgba(255,255,255,.25),inset 0 0 14px rgba(255,255,255,.22),0 10px 26px rgba(11,61,53,.14);--gloss:linear-gradient(180deg,rgba(255,255,255,.45),rgba(255,255,255,0) 55%)}
 html{background:#dff3ef;min-height:100%}
@@ -101,6 +111,10 @@ tr:nth-child(even) td{background:rgba(255,255,255,.28)}tr:hover td{background:rg
 .upd,.warn{border-radius:18px}
 .about .st{background:rgba(255,255,255,.45);border-radius:14px}
 @media(max-width:600px){header{border-radius:28px}}
+/* all tabs the same width */
+.tab{flex:0 0 230px;justify-content:center;text-align:center}
+@media(max-width:760px){.tab{flex:1 1 0;min-width:0;padding:9px 6px;font-size:14px}}
+#apps .bar{background:none;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;padding:0 0 12px;border-radius:0}
 </style>
 </head>
 <body>
@@ -119,25 +133,41 @@ tr:nth-child(even) td{background:rgba(255,255,255,.28)}tr:hover td{background:rg
 
 <header>
   <svg class="i" style="width:30px;height:30px"><use href="#file"/></svg>
-  <h1>Application Management System</h1>
+  <h1>ریکارڈ درخواست ہائے</h1>
 </header>
 
 <main>
-  <div class="bar">
-    <select id="sCol"></select>
-    <input id="sTxt" placeholder="Search...">
-    <button class="btn" id="addBtn"><svg class="i"><use href="#plus"/></svg> Add</button>
-  </div>
-
   <div class="tabs">
-    <button class="tab on" data-t="apps">درخواست ہائے</button>
+    <button class="tab on" data-t="apps">درخواست ہائے <span class="cnt" id="appCnt">0</span></button>
+    <button class="tab" data-t="reports">رپورٹس</button>
     <button class="tab" data-t="about"><svg class="i"><use href="#info"/></svg> راہنمائی و اپ ڈیٹس <svg class="i arr" id="arr"><use href="#down"/></svg></button>
   </div>
 
   <div class="panel on" id="apps">
-    <div class="warn" id="rptWarn"><span>ایکسل فائل میں Status والے کالم کے بعد اگلے کالم (Q) کی ہیڈنگ انگلش میں <b dir="ltr">Report</b> لکھیں، تاکہ + Add سے رپورٹ کا ڈیٹا محفوظ ہو سکے۔</span><button id="rptChk">دوبارہ چیک کریں</button></div>
+    <div class="bar">
+      <select id="sCol"></select>
+      <input id="sTxt" placeholder="Search...">
+      <button class="btn" id="addBtn"><svg class="i"><use href="#plus"/></svg> Add</button>
+    </div>
+    <div class="warn" id="rptWarn"><span id="rptMsg"></span><button id="rptChk">دوبارہ چیک کریں</button></div>
     <div class="wrap"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
-    <div class="pg"><span id="info"></span><div id="pages"></div></div>
+    <div class="pg"><span id="pgInfo"></span><div id="pages"></div></div>
+  </div>
+
+  <div class="panel" id="reports">
+    <div class="rbar">
+      <label>سرکل<select id="rCircle"></select></label>
+      <label>ڈویژن<select id="rDiv"></select></label>
+      <label>سٹیٹس<select id="rStatus"></select></label>
+      <label>رپورٹ<select id="rRep"></select></label>
+      <div class="rbtns">
+        <button class="btn" id="rPreview">Preview</button>
+        <button class="btn" id="rPrint">Print</button>
+        <button class="btn" id="rExport">Export Excel file</button>
+      </div>
+    </div>
+    <div class="rinfo" id="rInfo"></div>
+    <div class="rwrap"><table><thead id="rHead"></thead><tbody id="rBody"></tbody></table></div>
   </div>
 
   <div class="panel" id="about">
@@ -159,6 +189,11 @@ tr:nth-child(even) td{background:rgba(255,255,255,.28)}tr:hover td{background:rg
   <button class="xb" id="xBtn" title="Close"><svg class="i" style="width:24px;height:24px"><use href="#x"/></svg></button>
   <div class="grid" id="form"></div>
   <div class="foot"><button class="btn gray" id="cancel">Cancel</button><button class="btn" id="save">Save</button></div>
+</div></div>
+<div class="modal" id="rpModal"><div class="box" style="max-width:1150px;padding:44px 16px 16px">
+  <button class="xb" id="rpX" title="Close"><svg class="i" style="width:24px;height:24px"><use href="#x"/></svg></button>
+  <iframe id="rpFrame" style="width:100%;height:68vh;border:1px solid #cfd8dc;border-radius:12px;background:#fff"></iframe>
+  <div class="foot"><button class="btn gray" id="rpClose">Close</button><button class="btn" id="rpPrint">Print</button></div>
 </div></div>
 <div class="modal dlg" id="connDlg"><div class="box">
   <button class="xb" id="connX" title="Close"><svg class="i" style="width:24px;height:24px"><use href="#x"/></svg></button>
@@ -182,7 +217,7 @@ tr:nth-child(even) td{background:rgba(255,255,255,.28)}tr:hover td{background:rg
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='1.1.2';
+const APP_VERSION='1.1.3';
 /* Online Urdu fallback: Noto Nastaliq Urdu (used only if Jameel Noori Nastaleeq is not available) */
 const NOTO_SIZE='125%';
 const NOTO_CSS='https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap';
@@ -195,12 +230,14 @@ const NOTO_CSS='https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&disp
   }).catch(()=>{});
 })();
 const COLS=['Sr. No.','Diary No. CPO','Date (CPO)','Diary No. DC','Date (DC)','Applicant Name','Applicant ID Card','Applicant Contact','Address','Application Against','Tehsil','Police Station','Circle','Division','Return Date','Status'];
-const REPORT='Report', ALLC=[...COLS,REPORT], RPT_OPTS=['لف ہے','لف نہ ہے'];
-let hasReport=false;
+const REPORT='Report', ENTRY='Entry Date', ALLC=[...COLS,REPORT,ENTRY], RPT_OPTS=['لف ہے','لف نہ ہے'];
+let hasReport=false, hasEntry=false;
 const DATES=[2,4,14], DD={10:'tehsil',11:'police station',12:'circle',13:'division'}, PER=10;
 let wb=null, handle=null, rows=[], res={}, filtered=[], page=1, editIdx=-1;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* ID card and phone numbers: keep digits and dashes in order, never split across lines */
+const num=(i,v)=>(i===6||i===7)?`<span dir="ltr" style="white-space:nowrap;unicode-bidi:isolate">${esc(v)}</span>`:esc(v);
 const icon=n=>`<svg class="i"><use href="#${n}"/></svg>`;
 function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',2800)}
 
@@ -219,9 +256,11 @@ async function loadFile(){
   const raw=XLSX.utils.sheet_to_json(wb.Sheets['Applications'],{header:1,defval:'',raw:true});
   /* Report column must be the one right after Status, with the heading "Report" */
   hasReport=String((raw[0]||[])[16]??'').trim().toLowerCase()==='report';
-  $('rptWarn').style.display=hasReport?'none':'flex';
+  /* Entry Date column must be the one right after Report, with the heading "Entry Date" */
+  hasEntry=String((raw[0]||[])[17]??'').trim().toLowerCase()==='entry date';
+  updWarn();
   const a=raw.slice(1);
-  rows=a.filter(r=>r.slice(0,16).some(c=>c!=='')).map(r=>ALLC.map((_,i)=>{if(i===16&&!hasReport)return '';const v=r[i];return v instanceof Date?d2s(v):String(v??'')}));
+  rows=a.filter(r=>r.slice(0,16).some(c=>c!=='')).map(r=>ALLC.map((_,i)=>{if((i===16&&!hasReport)||(i===17&&!hasEntry))return '';const v=r[i];return v instanceof Date?d2s(v):String(v??'')}));
   res={};let cur='';
   XLSX.utils.sheet_to_json(wb.Sheets['Resources'],{header:1,defval:''}).forEach((r,i)=>{
     if(String(r[0]).trim())cur=String(r[0]).trim().toLowerCase();
@@ -232,14 +271,15 @@ async function loadFile(){
   $('reBtn').style.display='none';
   $('connDlg').classList.remove('on');
   applyFilter();
+  if($('reports').classList.contains('on'))renderReports();
   maybeShowUpdate();
 }
 async function saveFile(){
   if(!handle){toast('Please connect an Excel file in the About tab');return false}
   try{
     rows.forEach((r,i)=>r[0]=String(i+1));
-    const H=hasReport?ALLC:COLS,ws=XLSX.utils.aoa_to_sheet([H,...rows.map(r=>r.slice(0,H.length))]);
-    ws['!cols']=H.map((_,i)=>({wch:[7,14,12,14,12,24,18,16,32,28,16,18,14,14,12,10,14][i]}));
+    const n=hasEntry?18:hasReport?17:16,H=ALLC.map((c,i)=>(i===16&&!hasReport)?'':c).slice(0,n),ws=XLSX.utils.aoa_to_sheet([H,...rows.map(r=>r.slice(0,n))]);
+    ws['!cols']=H.map((_,i)=>({wch:[7,14,12,14,12,24,18,16,32,28,16,18,14,14,12,10,14,14][i]}));
     wb.Sheets['Applications']=ws;
     const out=XLSX.write(wb,{bookType:'xlsx',type:'array'});
     const w=await handle.createWritable();await w.write(out);await w.close();
@@ -269,7 +309,7 @@ function showConnDlg(last){
 const UR=['نمبر شمار','','','','','نامِ درخواست دہندہ','شناختی کارڈ نمبر','رابطہ نمبر','پتہ','درخواست بنام','تحصیل','تھانہ','سرکل','ڈویژن','تاریخِ واپسی','سٹیٹس'];
 function buildHead(){
   $('thead').innerHTML='<tr>'+COLS.map((c,i)=>(i===0||i>=5)?`<th>${UR[i]}</th>`:'').join('')+'<th>رپورٹ</th><th>کارروائی</th></tr>';
-  $('sCol').innerHTML=ALLC.map((c,i)=>i>=5?`<option value="${i}">${c}</option>`:'').join('');
+  $('sCol').innerHTML=ALLC.slice(0,17).map((c,i)=>i>=5?`<option value="${i}">${c}</option>`:'').join('');
   $('sCol').value='6';$('sTxt').dir='auto';
 }
 function applyFilter(){
@@ -282,14 +322,17 @@ function render(){
   const s=(page-1)*PER,list=filtered.slice(s,s+PER);
   $('tbody').innerHTML=list.length?list.map((o,k)=>{
     const r=o.r;
-    return `<tr><td>${s+k+1}</td>`+r.map((v,i)=>i<5?'':`<td>${i===15?`<span class="badge ${v.toLowerCase()}">${esc(v)}</span>`:esc(v)}</td>`).join('')+
+    return `<tr><td>${s+k+1}</td>`+r.map((v,i)=>(i<5||i>16)?'':`<td>${i===15?`<span class="badge ${v.toLowerCase()}">${esc(v)}</span>`:num(i,v)}</td>`).join('')+
     `<td class="act"><button class="pv" title="Preview" onclick="preview(${o.i})">${icon('eye')}</button><button class="dl" title="Delete" onclick="del(${o.i})">${icon('trash')}</button><button class="ed" title="Edit" onclick="openForm(${o.i})">${icon('edit')}</button></td></tr>`}).join('')
     :`<tr><td colspan="14" class="empty">${handle?'No applications found.':'Connect an Excel file from the About tab to begin.'}</td></tr>`;
-  $('info').textContent=n?`Showing ${s+1}-${Math.min(s+PER,n)} of ${n}`:'';
-  let b=`<button ${page===1?'disabled':''} onclick="go(${page-1})">Prev</button>`;
-  const a=Math.max(1,page-2),z=Math.min(tp,page+2);
+  $('pgInfo').textContent=n?`Showing ${s+1}-${Math.min(s+PER,n)} of ${n}`:'';
+  /* total applications in the circle next to the tab name */
+  const cn=$('appCnt');cn.textContent=rows.length;cn.style.display=handle?'':'none';
+  /* First | Prev | 5 page numbers | Next | Last */
+  const a=Math.min(Math.max(1,page-2),Math.max(1,tp-4)),z=Math.min(tp,a+4);
+  let b=`<button ${page===1?'disabled':''} onclick="go(1)">First</button><button ${page===1?'disabled':''} onclick="go(${page-1})">Prev</button>`;
   for(let p=a;p<=z;p++)b+=`<button class="${p===page?'on':''}" onclick="go(${p})">${p}</button>`;
-  b+=`<button ${page===tp?'disabled':''} onclick="go(${page+1})">Next</button>`;
+  b+=`<button ${page===tp?'disabled':''} onclick="go(${page+1})">Next</button><button ${page===tp?'disabled':''} onclick="go(${tp})">Last</button>`;
   $('pages').innerHTML=b;
 }
 const go=p=>{page=p;render()};
@@ -320,15 +363,24 @@ function openForm(i){
   $('f7').oninput=e=>{let d=e.target.value.replace(/\D/g,'').slice(0,11);e.target.value=d.length>4?d.slice(0,4)+'-'+d.slice(4):d};
   $('modal').classList.add('on');
 }
-$('rptChk').onclick=async()=>{if(!handle)return;try{await loadFile();toast(hasReport?'Report column mil gaya':'Report column abhi bhi nahi mila')}catch(e){alert('File read nahi ho saki: '+e.message)}};
-window.addEventListener('focus',()=>{if(handle&&!hasReport&&!$('modal').classList.contains('on'))loadFile().catch(()=>{})});
+function updWarn(){
+  const nr=!hasReport,ne=!hasEntry;
+  $('rptMsg').innerHTML=nr&&ne?'ایکسل فائل میں Status والے کالم کے بعد اگلے دو کالموں کی ہیڈنگ انگلش میں لکھیں: کالم (Q) میں <b dir="ltr">Report</b> اور کالم (R) میں <b dir="ltr">Entry Date</b>، تاکہ + Add سے رپورٹ اور اندراج کی تاریخ محفوظ ہو سکے۔'
+    :nr?'ایکسل فائل میں Status والے کالم کے بعد اگلے کالم (Q) کی ہیڈنگ انگلش میں <b dir="ltr">Report</b> لکھیں، تاکہ + Add سے رپورٹ کا ڈیٹا محفوظ ہو سکے۔'
+    :'ایکسل فائل میں Report والے کالم کے بعد اگلے کالم (R) کی ہیڈنگ انگلش میں <b dir="ltr">Entry Date</b> لکھیں، تاکہ نئی انٹری کی تاریخ (dd/mm/yyyy) خود بخود محفوظ ہو سکے۔';
+  $('rptWarn').style.display=(nr||ne)?'flex':'none';
+}
+$('rptChk').onclick=async()=>{if(!handle)return;try{await loadFile();toast(hasReport&&hasEntry?'Columns mil gaye':'Heading abhi bhi nahi mili')}catch(e){alert('File read nahi ho saki: '+e.message)}};
+window.addEventListener('focus',()=>{if(handle&&(!hasReport||!hasEntry)&&!$('modal').classList.contains('on'))loadFile().catch(()=>{})});
 $('addBtn').onclick=()=>{if(!handle){toast('Connect an Excel file first (About tab)');return}openForm(-1)};
 $('cancel').onclick=$('xBtn').onclick=()=>$('modal').classList.remove('on');
 $('save').onclick=async()=>{
   if(!$('f5').value.trim()){alert('Applicant Name is required');return}
+  const old=editIdx>=0?rows[editIdx]:null;
   const r=[String(rows.length+1)];
   for(let k=1;k<17;k++){const v=$('f'+k).value.trim();r.push(DATES.includes(k)?dmy(v):v)}
-  const old=editIdx>=0?rows[editIdx]:null;
+  /* entry date: set once, on a new entry only (kept as is when editing) */
+  r.push(old?(old[17]||''):(hasEntry?todayStr():''));
   if(editIdx>=0)rows[editIdx]=r;else rows.push(r);
   if(await saveFile()){$('modal').classList.remove('on');toast('Saved to Excel');applyFilter()}
   else{if(old)rows[editIdx]=old;else rows.pop()}
@@ -350,11 +402,75 @@ function preview(i){
   .sig{display:flex;justify-content:space-between;margin-top:70px}.sig div{border-top:1px solid #000;padding-top:4px;width:200px;text-align:center}
   @media print{button{display:none}}</style></head><body>
   <h1>Application Management System</h1>
-  <table>${(hasReport?ALLC:COLS).slice(1).map((c,k)=>`<tr><td>${c}</td><td>${esc(r[k+1])}</td></tr>`).join('')}</table>
+  <table>${ALLC.slice(0,hasEntry?18:hasReport?17:16).slice(1).map((c,k)=>`<tr><td>${c}</td><td>${esc(r[k+1])}</td></tr>`).join('')}</table>
   <div class="sig"><div>Prepared By</div><div>Signature</div></div>
   <script>window.onload=()=>setTimeout(()=>window.print(),300)<\/script></body></html>`);
   w.document.close();
 }
+
+/* ---------- Reports tab ---------- */
+const RP_COLS=[0,5,6,7,8,9,10,11,14];                  /* printed and exported columns */
+const RP_VIEW=[0,5,6,7,8,9,10,11,12,13,14,15,16];      /* columns shown on screen (all except Actions) */
+const RPT_BLANK='__blank';
+const todayStr=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return p(d.getDate())+'/'+p(d.getMonth()+1)+'/'+d.getFullYear()};
+const uniq=a=>[...new Set(a.filter(Boolean))];
+function fillSel(id,vals,extra){
+  const el=$(id),old=el.value;
+  el.innerHTML='<option value="">-- Select --</option>'+(extra||'')+vals.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');
+  el.value=[...el.options].some(o=>o.value===old)?old:'';
+}
+function reportList(){
+  const c=$('rCircle').value,d=$('rDiv').value,s=$('rStatus').value,p=$('rRep').value;
+  return rows.filter(r=>(!c||r[12]===c)&&(!d||r[13]===d)&&(!s||r[15].toLowerCase()===s.toLowerCase())&&(!p||(p===RPT_BLANK?!r[16]:r[16]===p))).slice().reverse();
+}
+function renderReports(){
+  fillSel('rCircle',uniq([...(res.circle||[]),...rows.map(r=>r[12])]));
+  fillSel('rDiv',uniq([...(res.division||[]),...rows.map(r=>r[13])]));
+  fillSel('rStatus',['Pending','Decided']);
+  fillSel('rRep',uniq([...RPT_OPTS,...rows.map(r=>r[16])]),`<option value="${RPT_BLANK}">خالی</option>`);
+  drawReports();
+}
+function drawReports(){
+  const list=reportList();
+  $('rHead').innerHTML='<tr>'+RP_VIEW.map(i=>`<th>${i===16?'رپورٹ':UR[i]}</th>`).join('')+'</tr>';
+  $('rBody').innerHTML=list.length?list.map((r,k)=>'<tr>'+RP_VIEW.map(i=>{const v=i===0?String(k+1):r[i];return `<td>${i===15?`<span class="badge ${v.toLowerCase()}">${esc(v)}</span>`:num(i,v)}</td>`}).join('')+'</tr>').join('')
+    :`<tr><td colspan="13" class="empty">${handle?'کوئی ریکارڈ نہیں ملا':'Connect an Excel file from the About tab to begin.'}</td></tr>`;
+  $('rInfo').textContent=handle?('کل ریکارڈ: '+list.length):'';
+}
+function listHTML(list){
+  const f=[['rCircle','سرکل'],['rDiv','ڈویژن'],['rStatus','سٹیٹس'],['rRep','رپورٹ']].map(([id,l])=>{const v=$(id).value;return v?l+': '+(v===RPT_BLANK?'خالی':v):''}).filter(Boolean).join(' &nbsp;|&nbsp; ');
+  return `<html dir="rtl"><head><meta charset="utf-8"><title>رپورٹ</title><style>
+  @font-face{font-family:UrduFont;src:local('Jameel Noori Nastaleeq'),url('${new URL('JameelNooriNastaleeq.ttf',location.href)}');size-adjust:126%;unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF}
+  ${document.getElementById('notoStyle')?.textContent||''}
+  @page{size:A4 landscape;margin:12mm}
+  body{font-family:UrduFont,UrduNoto,Inter,Segoe UI,Arial,sans-serif;color:#000;background:#fff;margin:0;padding:8px;font-size:15px}
+  h1{text-align:center;margin:0 0 4px;font-size:26px}.sub{text-align:center;margin:0 0 12px;font-size:15px;color:#333}
+  table{width:100%;border-collapse:collapse}thead{display:table-header-group}tr{page-break-inside:avoid}
+  th,td{border:1px solid #333;padding:6px 8px;text-align:right;vertical-align:top;font-size:15px}
+  th{background:#fff;color:#000;font-weight:700}
+  td:first-child,th:first-child{text-align:center;width:48px}
+  </style></head><body><h1>درخواستوں کی فہرست</h1>
+  <div class="sub">${f?f+' &nbsp;|&nbsp; ':''}کل: ${list.length} &nbsp;|&nbsp; تاریخ: ${todayStr()}</div>
+  <table><thead><tr>${RP_COLS.map(i=>`<th>${UR[i]}</th>`).join('')}</tr></thead><tbody>${list.map((r,k)=>'<tr>'+RP_COLS.map(i=>`<td>${i===0?k+1:num(i,r[i])}</td>`).join('')+'</tr>').join('')}</tbody></table></body></html>`;
+}
+const rpList=()=>{const l=reportList();if(!l.length){toast('کوئی ریکارڈ نہیں ملا');return null}return l};
+['rCircle','rDiv','rStatus','rRep'].forEach(id=>$(id).onchange=drawReports);
+$('rPreview').onclick=()=>{const l=rpList();if(!l)return;$('rpFrame').srcdoc=listHTML(l);$('rpModal').classList.add('on')};
+$('rpClose').onclick=$('rpX').onclick=()=>$('rpModal').classList.remove('on');
+$('rpPrint').onclick=()=>{const w=$('rpFrame').contentWindow;w.focus();w.print()};
+$('rPrint').onclick=()=>{
+  const l=rpList();if(!l)return;
+  const f=document.createElement('iframe');f.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0';
+  f.onload=()=>setTimeout(()=>{f.contentWindow.focus();f.contentWindow.print();setTimeout(()=>f.remove(),2000)},400);
+  f.srcdoc=listHTML(l);document.body.appendChild(f);
+};
+$('rExport').onclick=()=>{
+  const l=rpList();if(!l)return;
+  const ws=XLSX.utils.aoa_to_sheet([RP_COLS.map(i=>UR[i]),...l.map((r,k)=>RP_COLS.map(i=>i===0?k+1:r[i]))]);
+  ws['!cols']=[7,24,18,16,36,30,16,18,14].map(w=>({wch:w}));
+  const b=XLSX.utils.book_new();b.Workbook={Views:[{RTL:true}]};XLSX.utils.book_append_sheet(b,ws,'Report');
+  XLSX.writeFile(b,'Report_'+todayStr().replace(/\//g,'-')+'.xlsx');toast('Excel file export ho gayi');
+};
 
 /* ---------- Auto update ---------- */
 const UPDATE_URL='https://raw.githubusercontent.com/salarr/sahir4470/main/version.json';
@@ -449,6 +565,7 @@ setInterval(()=>checkUpdate(false),1800000);
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.tab,.panel').forEach(x=>x.classList.remove('on'));
   t.classList.add('on');$(t.dataset.t).classList.add('on');
+  if(t.dataset.t==='reports')renderReports();
 });
 window.addEventListener('load',async()=>{
   buildHead();render();
